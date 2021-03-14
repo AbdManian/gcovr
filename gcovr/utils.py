@@ -217,7 +217,11 @@ class RelativeFilter(Filter):
 
     def match(self, path):
         abspath = os.path.realpath(path)
-        relpath = os.path.relpath(abspath, self.root)
+        try:
+            relpath = os.path.relpath(abspath, self.root)
+        except ValueError:
+            # In Windows no relative path exists across drive letters
+            return None
         return super(RelativeFilter, self).match(relpath)
 
     def __str__(self):
